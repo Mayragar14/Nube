@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
 const API = import.meta.env.VITE_API_URL;
 
 function App() {
@@ -16,7 +17,12 @@ function App() {
       body: JSON.stringify({ username, password })
     });
     const data = await res.json();
-    if (data.token) setToken(data.token);
+    if (data.token) {
+      setToken(data.token);
+      cargarCitas(data.token);
+    } else {
+      alert("Credenciales inválidas");
+    }
   };
 
   const crearCita = async () => {
@@ -24,43 +30,89 @@ function App() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({ fecha, servicio })
     });
     cargarCitas();
   };
 
-  const cargarCitas = async () => {
+  const cargarCitas = async (forceToken) => {
     const res = await fetch(`${API}/citas`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${forceToken || token}`
+      }
     });
     const data = await res.json();
     setCitas(data);
   };
 
   return (
-    <div>
-      <h1>Gestión de Citas</h1>
-      <input placeholder="Usuario" onChange={e => setUsername(e.target.value)} />
-      <input type="password" placeholder="Contraseña" onChange={e => setPassword(e.target.value)} />
-      <button onClick={login}>Iniciar sesión</button>
+    <div className="container">
+      <div className="app-container shadow-lg">
+        <h1>Gestión de Citas</h1>
 
-      {token && (
-        <>
-          <h2>Crear Cita</h2>
-          <input placeholder="Fecha" onChange={e => setFecha(e.target.value)} />
-          <input placeholder="Servicio" onChange={e => setServicio(e.target.value)} />
-          <button onClick={crearCita}>Guardar</button>
+        {!token && (
+          <>
+            <h2>Iniciar sesión</h2>
+            <div className="mb-3">
+              <label className="form-label">Usuario</label>
+              <input
+                className="form-control"
+                placeholder="Ingrese usuario"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Contraseña</label>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Ingrese contraseña"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <button className="btn btn-primary w-100" onClick={login}>
+              Iniciar sesión
+            </button>
+          </>
+        )}
 
-          <h2>Mis Citas</h2>
-          <ul>
-            {citas.map((cita, i) => (
-              <li key={i}>{cita.fecha} - {cita.servicio}</li>
-            ))}
-          </ul>
-        </>
-      )}
+        {token && (
+          <>
+            <hr />
+            <h2>Nueva Cita</h2>
+            <div className="mb-3">
+              <label className="form-label">Fecha</label>
+              <input
+                type="date"
+                className="form-control"
+                onChange={(e) => setFecha(e.target.value)}
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Servicio</label>
+              <input
+                className="form-control"
+                placeholder="Ej. Odontología"
+                onChange={(e) => setServicio(e.target.value)}
+              />
+            </div>
+            <button className="btn btn-success w-100 mb-3" onClick={crearCita}>
+              Guardar cita
+            </button>
+
+            <h3>Mis Citas</h3>
+            <ul className="list-group">
+              {citas.map((cita, i) => (
+                <li key={i} className="list-group-item">
+                  <strong>{cita.fecha}</strong> – {cita.servicio}
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </div>
   );
 }
