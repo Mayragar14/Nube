@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const API = 'https://backend-citas-59bo.onrender.com';
+
 function App() {
   const [token, setToken] = useState('');
   const [username, setUsername] = useState('');
@@ -12,39 +14,47 @@ function App() {
 
   const [isRegister, setIsRegister] = useState(false); // Alterna entre login y registro
 
+  // Maneja login o registro
   const handleAuth = async (e) => {
     e.preventDefault();
-    const url = isRegister ? '/api/auth/register' : '/api/auth/login';
+    const url = isRegister ? `${API}/auth/register` : `${API}/auth/login`;
 
     try {
       const res = await axios.post(url, { username, password });
-      setToken(res.data.token);
-      setUsername('');
-      setPassword('');
+
+      if (res.data.token) {
+        setToken(res.data.token);
+        setUsername('');
+        setPassword('');
+      } else {
+        alert('No se recibió un token válido.');
+      }
     } catch (err) {
       alert(err.response?.data?.message || 'Error al autenticar');
     }
   };
 
+  // Crear nueva cita
   const handleCita = async (e) => {
     e.preventDefault();
     try {
       await axios.post(
-        '/api/citas',
+        `${API}/citas`,
         { fecha, servicio },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setFecha('');
       setServicio('');
-      fetchCitas();
+      fetchCitas(); // Recargar citas
     } catch (err) {
-      alert('Error al crear cita');
+      alert(err.response?.data?.message || 'Error al crear cita');
     }
   };
 
+  // Obtener citas
   const fetchCitas = async () => {
     try {
-      const res = await axios.get('/api/citas', {
+      const res = await axios.get(`${API}/citas`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCitas(res.data);
@@ -53,6 +63,7 @@ function App() {
     }
   };
 
+  // Al iniciar sesión o registrarse exitosamente
   useEffect(() => {
     if (token) {
       fetchCitas();
@@ -90,7 +101,12 @@ function App() {
             <button
               type="button"
               onClick={() => setIsRegister(!isRegister)}
-              style={{ border: 'none', background: 'none', color: 'blue', cursor: 'pointer' }}
+              style={{
+                border: 'none',
+                background: 'none',
+                color: 'blue',
+                cursor: 'pointer'
+              }}
             >
               {isRegister ? 'Inicia sesión' : 'Regístrate'}
             </button>
@@ -117,8 +133,17 @@ function App() {
               required
               style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
             />
-            <button type="submit" style={{ width: '100%', padding: '10px' }}>Guardar cita</button>
+            <button type="submit" style={{ width: '100%', padding: '10px' }}>
+              Guardar cita
+            </button>
           </form>
+
+          <button
+            onClick={() => setToken('')}
+            style={{ marginTop: '10px', padding: '5px 10px' }}
+          >
+            Cerrar sesión
+          </button>
 
           <h2 style={{ marginTop: '30px' }}>📋 Tus citas</h2>
           <ul>
@@ -135,4 +160,3 @@ function App() {
 }
 
 export default App;
-
