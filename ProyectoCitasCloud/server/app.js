@@ -17,6 +17,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/citas', citaRoutes);
 
 app.get('/', (req, res) => res.send('API funcionando'));
+app.get('/api', (req, res) => res.send('API base activa'));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Servidor en puerto ${PORT}`));
