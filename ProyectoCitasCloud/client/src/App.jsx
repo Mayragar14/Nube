@@ -1,6 +1,5 @@
 import { useState } from 'react';
 const API = import.meta.env.VITE_API_URL;
-// Comentario para forzar redeploy
 
 function App() {
   const [username, setUsername] = useState('');
