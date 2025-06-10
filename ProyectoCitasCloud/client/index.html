@@ -3,44 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="App de gestión de citas en la nube" />
+    <meta name="author" content="TuNombre" />
+
     <title>Gestión de Citas</title>
 
-    <!-- Bootstrap CSS desde CDN -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <!-- Favicon -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+    <!-- Estilos básicos -->
     <style>
       body {
-        background: #f5f7fa;
-        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+        background: #f9f9fb;
+        color: #333;
       }
-      .app-container {
-        max-width: 500px;
-        margin: 60px auto;
-        padding: 30px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      h1 {
+        margin-top: 30px;
+        color: #2c3e50;
       }
-      h1, h2 {
-        text-align: center;
-        margin-bottom: 20px;
+      h2 {
+        color: #34495e;
       }
-    </style>
-  </head>
-  <body>
-    <div id="root">
-      <!-- Aquí React insertará la aplicación -->
-    </div>
+      input, button {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background-color: #2ecc71;
+        color: white;
+        font-weight: bold;
+      }
 
-    <!-- Bootstrap JS (opcional para algunos componentes) -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
-
-    <!-- React se monta con este script -->
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
 
