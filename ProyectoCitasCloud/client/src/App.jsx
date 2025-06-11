@@ -152,7 +152,7 @@ const buttonStyle = {
   padding: '10px 20px',
   fontSize: '16px',
   cursor: 'pointer',
-  backgroundColor: '#28a745',
+  backgroundColor: '#51a0f5',
   color: 'white',
   border: 'none',
   borderRadius: '4px',
