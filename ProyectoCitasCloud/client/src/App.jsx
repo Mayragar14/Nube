@@ -75,7 +75,7 @@ function App() {
 
       {!token && (
         <section style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-          <h2 style={{ marginBottom: '10px' }}>{isRegister ? '🔐 Registro de Usuario' : '🔓 Iniciar Sesión'}</h2>
+          <h2 style={{ marginBottom: '10px' }}>{isRegister ? '🔐 Registro de Usuario' : '🔓 Iniciar sesión'}</h2>
           <form onSubmit={handleAuth}>
             <input
               type="text"
@@ -94,7 +94,7 @@ function App() {
               style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
             />
             <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007BFF', color: '#fff', border: 'none' }}>
-              {isRegister ? 'Registrarse' : 'Iniciar Sesión'}
+              {isRegister ? 'Registrarse' : 'Iniciar sesión'}
             </button>
           </form>
           <p style={{ textAlign: 'center', marginTop: '10px' }}>
