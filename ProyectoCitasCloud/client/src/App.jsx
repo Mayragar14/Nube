@@ -36,6 +36,11 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+  setToken('');
+  localStorage.removeItem('token');
+  };
+
   const handleCrearCita = async (e) => {
     e.preventDefault();
     try {
