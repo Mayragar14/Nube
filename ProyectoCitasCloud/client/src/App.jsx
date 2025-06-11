@@ -140,36 +140,6 @@ function App() {
   );
 }
 
-const inputStyle = {
-  display: 'block',
-  width: '100%',
-  padding: '10px',
-  marginBottom: '10px',
-  fontSize: '16px',
-};
 
-const buttonStyle = {
-  padding: '10px 20px',
-  fontSize: '16px',
-  cursor: 'pointer',
-  backgroundColor: '#51a0f5',
-  color: 'white',
-  border: 'none',
-  borderRadius: '4px',
-};
-
-const logoutButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: '#dc3545',
-};
-
-const linkButtonStyle = {
-  background: 'none',
-  border: 'none',
-  color: '#007bff',
-  cursor: 'pointer',
-  textDecoration: 'underline',
-  padding: 0,
-};
 
 export default App;
