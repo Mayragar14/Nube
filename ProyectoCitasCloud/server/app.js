@@ -8,7 +8,7 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors({
-  origin: ['https://nube-eths8gcvz-mayras-projects-b629d2bf.vercel.app'], 
+  origin: ['https://nube-pied.vercel.app/'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
