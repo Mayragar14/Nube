@@ -4,13 +4,19 @@ import axios from 'axios';
 const API = 'https://backend-citas-59bo.onrender.com';
 
 function App() {
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [fecha, setFecha] = useState('');
   const [servicio, setServicio] = useState('');
   const [citas, setCitas] = useState([]);
   const [isRegister, setIsRegister] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      fetchCitas();
+    }
+  }, [token]);
 
   const handleAuth = async (e) => {
     e.preventDefault();
@@ -19,10 +25,9 @@ function App() {
       const res = await axios.post(url, { username, password });
       if (res.data.token) {
         setToken(res.data.token);
+        localStorage.setItem('token', res.data.token);
         setUsername('');
         setPassword('');
-        alert(isRegister ? 'Usuario registrado con éxito' : 'Login exitoso');
-        loadCitas(res.data.token);
       } else {
         alert('No se recibió un token válido.');
       }
@@ -31,67 +36,72 @@ function App() {
     }
   };
 
-  const handleCita = async (e) => {
+  const handleCrearCita = async (e) => {
     e.preventDefault();
     try {
       await axios.post(
-        `${API}/citas`,
+        `${API}/api/citas`,
         { fecha, servicio },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       setFecha('');
       setServicio('');
-      loadCitas(token);
+      fetchCitas();
     } catch (err) {
       alert('Error al crear la cita');
     }
   };
 
-  const loadCitas = async (authToken) => {
+  const fetchCitas = async () => {
     try {
-      const res = await axios.get(`${API}/citas`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
+      const res = await axios.get(`${API}/api/citas`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setCitas(res.data);
     } catch (err) {
-      alert('Error al cargar las citas');
+      console.error('Error al cargar citas:', err);
     }
   };
 
+  const handleLogout = () => {
+    setToken('');
+    localStorage.removeItem('token');
+  };
+
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
+    <div style={{ padding: '20px' }}>
       <h1>Gestión de Citas</h1>
 
-      <form onSubmit={handleAuth}>
-        <input
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">{isRegister ? 'Registrarse' : 'Iniciar sesión'}</button>
-        <button type="button" onClick={() => setIsRegister(!isRegister)}>
-          {isRegister ? 'Ya tengo cuenta' : 'Crear cuenta'}
-        </button>
-      </form>
-
-      {token && (
+      {!token ? (
         <>
-          <h2>Crear nueva cita</h2>
-          <form onSubmit={handleCita}>
+          <h2>{isRegister ? 'Registrarse' : 'Iniciar Sesión'}</h2>
+          <form onSubmit={handleAuth}>
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit">{isRegister ? 'Registrarse' : 'Ingresar'}</button>
+          </form>
+          <button onClick={() => setIsRegister(!isRegister)}>
+            {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
+          </button>
+        </>
+      ) : (
+        <>
+          <button onClick={handleLogout}>Cerrar sesión</button>
+
+          <h2>Crear Cita</h2>
+          <form onSubmit={handleCrearCita}>
             <input
               type="date"
               value={fecha}
@@ -99,6 +109,7 @@ function App() {
               required
             />
             <input
+              type="text"
               placeholder="Servicio"
               value={servicio}
               onChange={(e) => setServicio(e.target.value)}
@@ -107,10 +118,10 @@ function App() {
             <button type="submit">Guardar cita</button>
           </form>
 
-          <h2>Mis citas</h2>
+          <h2>Mis Citas</h2>
           <ul>
-            {citas.map((cita, i) => (
-              <li key={i}>
+            {citas.map((cita) => (
+              <li key={cita._id}>
                 {cita.fecha} - {cita.servicio}
               </li>
             ))}
