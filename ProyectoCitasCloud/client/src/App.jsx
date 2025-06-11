@@ -68,11 +68,11 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
-      <h1 style={{ textAlign: 'center' }}>Gestión de Citas</h1>
+      <h1 style={{ textAlign: 'center' }}>GESTIÓN DE CITAS</h1>
 
       {!token ? (
         <form onSubmit={handleAuth} style={{ marginBottom: '2rem' }}>
-          <h2>{isRegister ? 'Registro' : 'Iniciar Sesión'}</h2>
+          <h2>{isRegister ? 'Registro' : 'Iniciar sesión'}</h2>
           <input
             type="text"
             placeholder="Usuario"
@@ -89,9 +89,12 @@ function App() {
             required
             style={inputStyle}
           />
-          <button type="submit" style={buttonStyle}>
-            {isRegister ? 'Registrarse' : 'Entrar'}
-          </button>
+          <div style={{ textAlign: 'center' }}>
+            <button type="submit" style={buttonStyle}>
+              {isRegister ? 'Registrarse' : 'Entrar'}
+            </button>
+          </div>
+
          <p>
             {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
             <button
