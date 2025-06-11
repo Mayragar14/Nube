@@ -92,10 +92,14 @@ function App() {
           <button type="submit" style={buttonStyle}>
             {isRegister ? 'Registrarse' : 'Entrar'}
           </button>
-          <p>
+         <p>
             {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
-            <button type="button" onClick={() => setIsRegister(!isRegister)} style={linkButtonStyle}>
-              {isRegister ? 'Iniciar sesión' : 'Registrarse'}
+            <button
+            type="button"
+            onClick={() => setIsRegister(!isRegister)}
+            className="link-button"
+            >
+            {isRegister ? 'Iniciar sesión' : 'Registrarse'}
             </button>
           </p>
         </form>
