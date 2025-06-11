@@ -75,45 +75,46 @@ function App() {
 
       {!token && (
         <section style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
-    	<div style={{ maxWidth: '400px', margin: '0 auto' }}>
-          <h2 style={{ marginBottom: '10px' }}>{isRegister ? '🔐 Registro de usuario' : '🔓 Iniciar sesión'}</h2>
-          <form onSubmit={handleAuth}>
-            <input
-              type="text"
-              placeholder="Usuario"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
-            />
-            <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007BFF', color: '#fff', border: 'none' }}>
-              {isRegister ? 'Registrarse' : 'Iniciar sesión'}
-            </button>
-          </form>
-          <p style={{ textAlign: 'center', marginTop: '10px' }}>
-            {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
-            <button
-              type="button"
-              onClick={() => setIsRegister(!isRegister)}
-              style={{
-                border: 'none',
-                background: 'none',
-                color: 'blue',
-                cursor: 'pointer',
-                textDecoration: 'underline'
-              }}
-            >
-              {isRegister ? 'Inicia sesión' : 'Regístrate'}
-            </button>
-          </p>
+          <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+            <h2 style={{ marginBottom: '10px' }}>{isRegister ? '🔐 Registro de usuario' : '🔓 Iniciar sesión'}</h2>
+            <form onSubmit={handleAuth}>
+              <input
+                type="text"
+                placeholder="Usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
+              />
+              <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007BFF', color: '#fff', border: 'none' }}>
+                {isRegister ? 'Registrarse' : 'Iniciar sesión'}
+              </button>
+            </form>
+            <p style={{ textAlign: 'center', marginTop: '10px' }}>
+              {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
+              <button
+                type="button"
+                onClick={() => setIsRegister(!isRegister)}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  color: 'blue',
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                {isRegister ? 'Inicia sesión' : 'Regístrate'}
+              </button>
+            </p>
+          </div>
         </section>
       )}
 
