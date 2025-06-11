@@ -174,6 +174,7 @@ const linkButtonStyle = {
   cursor: 'pointer',
   textDecoration: 'underline',
   padding: 0,
+  margin: '0 auto',
 };
 
 
