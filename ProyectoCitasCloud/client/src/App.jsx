@@ -17,7 +17,7 @@ function App() {
   // Maneja login o registro
   const handleAuth = async (e) => {
     e.preventDefault();
-    const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login``;
+    const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
 
     try {
       const res = await axios.post(url, { username, password });
