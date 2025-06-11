@@ -21,7 +21,7 @@ input, button {
 }
 
 .link-button:hover {
-  color: #babcbf;
+  color: #cfd3d4;
 }
 
 const inputStyle = {
