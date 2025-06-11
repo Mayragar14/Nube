@@ -159,6 +159,7 @@ const buttonStyle = {
   color: 'white',
   border: 'none',
   borderRadius: '4px',
+  margin: '0 auto',
 };
 
 const logoutButtonStyle = {
