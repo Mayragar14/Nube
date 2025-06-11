@@ -7,3 +7,17 @@ body {
 input, button {
   border-radius: 4px;
 }
+
+.toggle-auth {
+  margin-top: 1rem;
+  color: #007bff;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.toggle-auth:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
