@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './App.css'; // Opcional: crea un archivo App.css si prefieres estilos separados
 
 const API = 'https://backend-citas-59bo.onrender.com';
 
 function App() {
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
+  const [token, setToken] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [fecha, setFecha] = useState('');
@@ -18,6 +19,17 @@ function App() {
     }
   }, [token]);
 
+  const fetchCitas = async () => {
+    try {
+      const res = await axios.get(`${API}/api/citas`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCitas(res.data);
+    } catch (err) {
+      alert('Error al obtener citas');
+    }
+  };
+
   const handleAuth = async (e) => {
     e.preventDefault();
     const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
@@ -25,7 +37,6 @@ function App() {
       const res = await axios.post(url, { username, password });
       if (res.data.token) {
         setToken(res.data.token);
-        localStorage.setItem('token', res.data.token);
         setUsername('');
         setPassword('');
       } else {
@@ -36,82 +47,69 @@ function App() {
     }
   };
 
-  const handleLogout = () => {
-  setToken('');
-  localStorage.removeItem('token');
-  };
-
   const handleCrearCita = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        `${API}/api/citas`,
-        { fecha, servicio },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.post(`${API}/api/citas`, { fecha, servicio }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setFecha('');
       setServicio('');
       fetchCitas();
     } catch (err) {
-      alert('Error al crear la cita');
-    }
-  };
-
-  const fetchCitas = async () => {
-    try {
-      const res = await axios.get(`${API}/api/citas`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setCitas(res.data);
-    } catch (err) {
-      console.error('Error al cargar citas:', err);
+      alert('Error al crear cita');
     }
   };
 
   const handleLogout = () => {
     setToken('');
-    localStorage.removeItem('token');
+    setCitas([]);
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Gestión de Citas</h1>
+    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
+      <h1 style={{ textAlign: 'center' }}>Gestión de Citas</h1>
 
       {!token ? (
-        <>
-          <h2>{isRegister ? 'Registrarse' : 'Iniciar Sesión'}</h2>
-          <form onSubmit={handleAuth}>
-            <input
-              type="text"
-              placeholder="Usuario"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit">{isRegister ? 'Registrarse' : 'Ingresar'}</button>
-          </form>
-          <button onClick={() => setIsRegister(!isRegister)}>
-            {isRegister ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
+        <form onSubmit={handleAuth} style={{ marginBottom: '2rem' }}>
+          <h2>{isRegister ? 'Registro' : 'Iniciar Sesión'}</h2>
+          <input
+            type="text"
+            placeholder="Usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            style={inputStyle}
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={inputStyle}
+          />
+          <button type="submit" style={buttonStyle}>
+            {isRegister ? 'Registrarse' : 'Entrar'}
           </button>
-        </>
+          <p>
+            {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
+            <button type="button" onClick={() => setIsRegister(!isRegister)} style={linkButtonStyle}>
+              {isRegister ? 'Iniciar sesión' : 'Registrarse'}
+            </button>
+          </p>
+        </form>
       ) : (
         <>
-          <button onClick={handleLogout}>Cerrar sesión</button>
-
-          <h2>Crear Cita</h2>
-          <form onSubmit={handleCrearCita}>
+          <button onClick={handleLogout} style={logoutButtonStyle}>Cerrar Sesión</button>
+          <form onSubmit={handleCrearCita} style={{ marginTop: '2rem' }}>
+            <h2>Crear Cita</h2>
             <input
               type="date"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
               required
+              style={inputStyle}
             />
             <input
               type="text"
@@ -119,22 +117,55 @@ function App() {
               value={servicio}
               onChange={(e) => setServicio(e.target.value)}
               required
+              style={inputStyle}
             />
-            <button type="submit">Guardar cita</button>
+            <button type="submit" style={buttonStyle}>Crear</button>
           </form>
 
-          <h2>Mis Citas</h2>
-          <ul>
-            {citas.map((cita) => (
-              <li key={cita._id}>
-                {cita.fecha} - {cita.servicio}
-              </li>
-            ))}
-          </ul>
+          <div style={{ marginTop: '2rem' }}>
+            <h2>Mis Citas</h2>
+            <ul>
+              {citas.map((cita) => (
+                <li key={cita._id}>{cita.fecha} - {cita.servicio}</li>
+              ))}
+            </ul>
+          </div>
         </>
       )}
     </div>
   );
 }
+
+const inputStyle = {
+  display: 'block',
+  width: '100%',
+  padding: '10px',
+  marginBottom: '10px',
+  fontSize: '16px',
+};
+
+const buttonStyle = {
+  padding: '10px 20px',
+  fontSize: '16px',
+  cursor: 'pointer',
+  backgroundColor: '#28a745',
+  color: 'white',
+  border: 'none',
+  borderRadius: '4px',
+};
+
+const logoutButtonStyle = {
+  ...buttonStyle,
+  backgroundColor: '#dc3545',
+};
+
+const linkButtonStyle = {
+  background: 'none',
+  border: 'none',
+  color: '#007bff',
+  cursor: 'pointer',
+  textDecoration: 'underline',
+  padding: 0,
+};
 
 export default App;
