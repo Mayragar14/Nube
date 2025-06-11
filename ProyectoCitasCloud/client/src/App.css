@@ -9,7 +9,7 @@ input, button {
 }
 
 .link-button {
-  background: none;
+  background: none !important;
   border: none;
   color: #51a0f5;
   padding: 0;
@@ -21,7 +21,8 @@ input, button {
 }
 
 .link-button:hover {
-  color: #cfd3d4;
+  background: none !important;
+  color: #x;
 }
 
 
