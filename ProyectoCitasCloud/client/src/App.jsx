@@ -21,7 +21,8 @@ function App() {
         setToken(res.data.token);
         setUsername('');
         setPassword('');
-        cargarCitas(res.data.token);
+        alert(isRegister ? 'Usuario registrado con éxito' : 'Login exitoso');
+        loadCitas(res.data.token);
       } else {
         alert('No se recibió un token válido.');
       }
@@ -36,69 +37,82 @@ function App() {
       await axios.post(
         `${API}/citas`,
         { fecha, servicio },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setFecha('');
       setServicio('');
-      cargarCitas(token);
+      loadCitas(token);
     } catch (err) {
       alert('Error al crear la cita');
     }
   };
 
-  const cargarCitas = async (authToken) => {
+  const loadCitas = async (authToken) => {
     try {
       const res = await axios.get(`${API}/citas`, {
-        headers: { Authorization: `Bearer ${authToken}` }
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
       });
       setCitas(res.data);
     } catch (err) {
-      alert('Error al cargar citas');
+      alert('Error al cargar las citas');
     }
   };
 
   return (
-    <div>
+    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
       <h1>Gestión de Citas</h1>
+
       <form onSubmit={handleAuth}>
         <input
           placeholder="Usuario"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button type="submit">{isRegister ? 'Registrarse' : 'Iniciar sesión'}</button>
         <button type="button" onClick={() => setIsRegister(!isRegister)}>
-          {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}
+          {isRegister ? 'Ya tengo cuenta' : 'Crear cuenta'}
         </button>
       </form>
 
       {token && (
         <>
-          <h2>Crear Cita</h2>
+          <h2>Crear nueva cita</h2>
           <form onSubmit={handleCita}>
             <input
-              placeholder="Fecha"
+              type="date"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
+              required
             />
             <input
               placeholder="Servicio"
               value={servicio}
               onChange={(e) => setServicio(e.target.value)}
+              required
             />
-            <button type="submit">Guardar</button>
+            <button type="submit">Guardar cita</button>
           </form>
 
-          <h2>Mis Citas</h2>
+          <h2>Mis citas</h2>
           <ul>
             {citas.map((cita, i) => (
-              <li key={i}>{cita.fecha} - {cita.servicio}</li>
+              <li key={i}>
+                {cita.fecha} - {cita.servicio}
+              </li>
             ))}
           </ul>
         </>
@@ -108,122 +122,3 @@ function App() {
 }
 
 export default App;
-
-import React, { useState } from 'react';
-import axios from 'axios';
-
-const API = 'https://backend-citas-59bo.onrender.com';
-
-function App() {
-  const [token, setToken] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [fecha, setFecha] = useState('');
-  const [servicio, setServicio] = useState('');
-  const [citas, setCitas] = useState([]);
-  const [isRegister, setIsRegister] = useState(false);
-
-  const handleAuth = async (e) => {
-    e.preventDefault();
-    const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
-    try {
-      const res = await axios.post(url, { username, password });
-      if (res.data.token) {
-        setToken(res.data.token);
-        setUsername('');
-        setPassword('');
-        cargarCitas(res.data.token);
-      } else {
-        alert('No se recibió un token válido.');
-      }
-    } catch (err) {
-      alert(err.response?.data?.message || 'Error al autenticar');
-    }
-  };
-
-  const handleCita = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(
-        `${API}/citas`,
-        { fecha, servicio },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setFecha('');
-      setServicio('');
-      cargarCitas(token);
-    } catch (err) {
-      alert('Error al crear la cita');
-    }
-  };
-
-  const cargarCitas = async (authToken) => {
-    try {
-      const res = await axios.get(`${API}/citas`, {
-        headers: { Authorization: `Bearer ${authToken}` }
-      });
-      setCitas(res.data);
-    } catch (err) {
-      alert('Error al cargar citas');
-    }
-  };
-
-  return (
-    <div style={styles.container}>
-      <h1>Gestión de Citas</h1>
-
-      <form onSubmit={handleAuth} style={styles.form}>
-        <input
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={styles.input}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
-        />
-        <div style={styles.buttonGroup}>
-          <button type="submit" style={styles.button}>
-            {isRegister ? 'Registrarse' : 'Iniciar sesión'}
-          </button>
-          <button
-            type="button"
-            onClick={() => setIsRegister(!isRegister)}
-            style={{ ...styles.button, backgroundColor: '#ddd', color: '#333' }}
-          >
-            {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}
-          </button>
-        </div>
-      </form>
-
-      {token && (
-        <>
-          <h2>Crear Cita</h2>
-          <form onSubmit={handleCita} style={styles.form}>
-            <input
-              placeholder="Fecha (YYYY-MM-DD)"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              style={styles.input}
-            />
-            <input
-              placeholder="Servicio"
-              value={servicio}
-              onChange={(e) => setServicio(e.target.value)}
-              style={styles.input}
-            />
-            <button type="submit" style={styles.button}>Guardar</button>
-          </form>
-
-          <h2>Mis Citas</h2>
-          <ul style={styles.list}>
-            {citas.map((cita, i) => (
-              <li key={i} style={styles.listItem}>
-                📅 {cita.fecha} - 💼 {cita.servicio}
-              </li>
-            ))}
-          </ul>
