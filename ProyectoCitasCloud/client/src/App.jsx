@@ -14,7 +14,7 @@ function App() {
 
   const [isRegister, setIsRegister] = useState(false); // Alterna entre login y registro
 
-  // Maneja login o registro
+  // Autenticación (login o registro)
   const handleAuth = async (e) => {
     e.preventDefault();
     const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
@@ -63,7 +63,6 @@ function App() {
     }
   };
 
-  // Al iniciar sesión o registrarse exitosamente
   useEffect(() => {
     if (token) {
       fetchCitas();
@@ -71,31 +70,33 @@ function App() {
   }, [token]);
 
   return (
-    <div style={{ maxWidth: '500px', margin: 'auto', fontFamily: 'Arial' }}>
-      <h1 style={{ textAlign: 'center' }}>🗓️ Gestión de Citas</h1>
+    <div style={{ maxWidth: '600px', margin: 'auto', fontFamily: 'Arial, sans-serif', padding: '2rem' }}>
+      <h1 style={{ textAlign: 'center', color: '#007BFF' }}>🗓️ Gestión de Citas Médicas</h1>
 
       {!token && (
-        <form onSubmit={handleAuth} style={{ marginBottom: '20px' }}>
-          <h2>{isRegister ? 'Registro' : 'Iniciar sesión'}</h2>
-          <input
-            type="text"
-            placeholder="Usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
-          />
-          <button type="submit" style={{ width: '100%', padding: '10px' }}>
-            {isRegister ? 'Registrarse' : 'Iniciar sesión'}
-          </button>
+        <section style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
+          <h2 style={{ marginBottom: '10px' }}>{isRegister ? '🔐 Registro de Usuario' : '🔓 Iniciar Sesión'}</h2>
+          <form onSubmit={handleAuth}>
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
+            />
+            <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#007BFF', color: '#fff', border: 'none' }}>
+              {isRegister ? 'Registrarse' : 'Iniciar Sesión'}
+            </button>
+          </form>
           <p style={{ textAlign: 'center', marginTop: '10px' }}>
             {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
             <button
@@ -105,54 +106,70 @@ function App() {
                 border: 'none',
                 background: 'none',
                 color: 'blue',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                textDecoration: 'underline'
               }}
             >
               {isRegister ? 'Inicia sesión' : 'Regístrate'}
             </button>
           </p>
-        </form>
+        </section>
       )}
 
       {token && (
         <>
-          <form onSubmit={handleCita}>
-            <h2>Crear nueva cita</h2>
-            <input
-              type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              required
-              style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
-            />
-            <input
-              type="text"
-              placeholder="Motivo o servicio"
-              value={servicio}
-              onChange={(e) => setServicio(e.target.value)}
-              required
-              style={{ width: '100%', marginBottom: '10px', padding: '8px' }}
-            />
-            <button type="submit" style={{ width: '100%', padding: '10px' }}>
-              Guardar cita
-            </button>
-          </form>
+          <section style={{ border: '1px solid #28a745', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
+            <h2 style={{ color: '#28a745' }}>📅 Crear nueva cita</h2>
+            <form onSubmit={handleCita}>
+              <input
+                type="date"
+                value={fecha}
+                onChange={(e) => setFecha(e.target.value)}
+                required
+                style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
+              />
+              <input
+                type="text"
+                placeholder="Motivo o servicio"
+                value={servicio}
+                onChange={(e) => setServicio(e.target.value)}
+                required
+                style={{ width: '100%', marginBottom: '10px', padding: '10px' }}
+              />
+              <button type="submit" style={{ width: '100%', padding: '10px', backgroundColor: '#28a745', color: '#fff', border: 'none' }}>
+                Guardar cita
+              </button>
+            </form>
+          </section>
+
+          <section style={{ border: '1px solid #17a2b8', padding: '20px', borderRadius: '8px', marginBottom: '30px' }}>
+            <h2 style={{ color: '#17a2b8' }}>📋 Tus citas</h2>
+            {citas.length === 0 ? (
+              <p>No hay citas registradas.</p>
+            ) : (
+              <ul>
+                {citas.map((cita, i) => (
+                  <li key={i}>
+                    <strong>{new Date(cita.fecha).toLocaleDateString()}</strong> – {cita.servicio}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
 
           <button
             onClick={() => setToken('')}
-            style={{ marginTop: '10px', padding: '5px 10px' }}
+            style={{
+              width: '100%',
+              padding: '10px',
+              backgroundColor: '#dc3545',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '5px'
+            }}
           >
-            Cerrar sesión
+            🔒 Cerrar sesión
           </button>
-
-          <h2 style={{ marginTop: '30px' }}>📋 Tus citas</h2>
-          <ul>
-            {citas.map((cita, i) => (
-              <li key={i}>
-                {new Date(cita.fecha).toLocaleDateString()} – {cita.servicio}
-              </li>
-            ))}
-          </ul>
         </>
       )}
     </div>
