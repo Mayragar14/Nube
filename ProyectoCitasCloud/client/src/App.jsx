@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App.css'; 
+import './App.css';
+
 const API = 'https://backend-citas-59bo.onrender.com';
 
 function App() {
@@ -66,8 +67,9 @@ function App() {
       setFecha('');
       setServicio('');
       fetchCitas();
+      showToast('Cita creada con éxito', 'success');
     } catch (err) {
-      alert('Error al crear cita');
+      showToast('Error al crear cita', 'error');
     }
   };
 
@@ -76,85 +78,90 @@ function App() {
     setCitas([]);
   };
 
-  return (     
-    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
+  return (
+    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto', position: 'relative' }}>
       <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
       {loading && <div className="spinner"></div>}
 
       {!token ? (
         <>
-          <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
-            <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
-            <input
-              type="text"
-              placeholder="Usuario"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              style={inputStyle}
-            />
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={inputStyle}
-            />
-            <div style={{ textAlign: 'center' }}>
-              <button type="submit" style={buttonStyle}>
-                {isRegister ? 'Registrarse' : 'Entrar'}
-              </button>
-            </div>
-
-            <div style={{ textAlign: 'center' }}>
-              <p>
-                {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
-                <button
-                  type="button"
-                  onClick={() => setIsRegister(!isRegister)}
-                  className="link-button"
-                >
-                  {isRegister ? 'Inicia sesión' : 'Regístrate'}
+          <div style={{ position: 'relative' }}>
+            <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
+              <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
+              <input
+                type="text"
+                placeholder="Usuario"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                style={inputStyle}
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={inputStyle}
+              />
+              <div style={{ textAlign: 'center' }}>
+                <button type="submit" style={buttonStyle}>
+                  {isRegister ? 'Registrarse' : 'Entrar'}
                 </button>
-              </p>
-            </div>
-          </form>
+              </div>
 
-          {toast.show && (
-            <div className={`toast ${toast.type}`}>
-              {toast.message}
-            </div>
-          )}
+              <div style={{ textAlign: 'center' }}>
+                <p>
+                  {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
+                  <button
+                    type="button"
+                    onClick={() => setIsRegister(!isRegister)}
+                    className="link-button"
+                  >
+                    {isRegister ? 'Inicia sesión' : 'Regístrate'}
+                  </button>
+                </p>
+              </div>
+            </form>
+
+            {toast.show && (
+              <div className={`toast ${toast.type}`}>
+                {toast.message}
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <>
           <button onClick={handleLogout} style={logoutButtonStyle}>Cerrar Sesión</button>
-          <form onSubmit={handleCrearCita} style={{ marginTop: '2rem' }}>
-            <h2>Crear Cita</h2>
-            <input
-              type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              required
-              style={inputStyle}
-            />
-            <input
-              type="text"
-              placeholder="Servicio"
-              value={servicio}
-              onChange={(e) => setServicio(e.target.value)}
-              required
-              style={inputStyle}
-            />
-            <button type="submit" style={buttonStyle}>Crear</button>
-          </form>
 
-          {toast.show && (
-            <div className={`toast ${toast.type}`} style={{ marginTop: '1rem' }}>
-              {toast.message}
-            </div>
-          )}
+          <div style={{ position: 'relative', marginTop: '2rem' }}>
+            <form onSubmit={handleCrearCita}>
+              <h2>Crear Cita</h2>
+              <input
+                type="date"
+                value={fecha}
+                onChange={(e) => setFecha(e.target.value)}
+                required
+                style={inputStyle}
+              />
+              <input
+                type="text"
+                placeholder="Servicio"
+                value={servicio}
+                onChange={(e) => setServicio(e.target.value)}
+                required
+                style={inputStyle}
+              />
+              <button type="submit" style={buttonStyle}>Crear</button>
+            </form>
+
+            {toast.show && (
+              <div className={`toast ${toast.type}`}>
+                {toast.message}
+              </div>
+            )}
+          </div>
 
           <div style={{ marginTop: '2rem' }}>
             <h2>Mis Citas</h2>
@@ -192,16 +199,6 @@ const buttonStyle = {
 const logoutButtonStyle = {
   ...buttonStyle,
   backgroundColor: '#dc3545',
-};
-
-const linkButtonStyle = {
-  background: 'none',
-  border: 'none',
-  color: '#007bff',
-  cursor: 'pointer',
-  textDecoration: 'underline',
-  padding: 0,
-  margin: '0 auto',
 };
 
 export default App;
