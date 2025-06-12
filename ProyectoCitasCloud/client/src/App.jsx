@@ -59,19 +59,26 @@ function App() {
   };
 
   const handleCrearCita = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${API}/api/citas`, { fecha, servicio }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setFecha('');
-      setServicio('');
-      fetchCitas();
-      showToast('Cita creada con éxito', 'success');
-    } catch (err) {
-      showToast('Error al crear cita', 'error');
-    }
-  };
+  e.preventDefault();
+
+  if (!fecha || !servicio) {
+    showToast('Por favor completa todos los campos', 'error');
+    return;
+  }
+
+  try {
+    await axios.post(`${API}/api/citas`, { fecha, servicio }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setFecha('');
+    setServicio('');
+    fetchCitas();
+    showToast('Cita creada con éxito', 'success');
+  } catch (err) {
+    showToast('Error al crear cita', 'error');
+  }
+};
+
 
   const handleLogout = () => {
     setToken('');
@@ -145,14 +152,25 @@ function App() {
                 required
                 style={inputStyle}
               />
-              <input
-                type="text"
-                placeholder="Servicio"
+              
+              <select
                 value={servicio}
                 onChange={(e) => setServicio(e.target.value)}
-                required
-                style={inputStyle}
-              />
+                style={{
+                borderColor: servicio === "" ? "red" : "#ccc",
+                padding: "8px",
+                marginBottom: "10px"
+                      }}
+              >
+                    <option value="">-- Selecciona un servicio --</option>
+                    <option value="Consulta médica">Consulta médica</option>
+                    <option value="Psicología">Psicología</option>
+                    <option value="Nutrición">Nutrición</option>
+                    <option value="Asesoría técnica">Asesoría técnica</option>
+                    <option value="Otro">Otro</option>
+              </select>
+
+
               <button type="submit" style={buttonStyle}>Crear</button>
             </form>
 
