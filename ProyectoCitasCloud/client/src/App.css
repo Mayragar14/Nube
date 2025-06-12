@@ -18,6 +18,7 @@ input, button {
   text-decoration: underline;
   font-weight: bold;
   transition: color 0.3s ease;
+  display: inline; 
 }
 
 .link-button:hover {
