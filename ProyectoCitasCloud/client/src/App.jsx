@@ -71,7 +71,7 @@ function App() {
       <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
 
       {!token ? (
-        <form onSubmit={handleAuth} style={{ marginBottom: '2rem' }}>
+        <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
           <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
           <input
             type="text"
