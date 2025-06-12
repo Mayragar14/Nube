@@ -11,7 +11,6 @@ function App() {
   const [servicio, setServicio] = useState('');
   const [citas, setCitas] = useState([]);
   const [isRegister, setIsRegister] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
 
@@ -33,32 +32,30 @@ function App() {
   };
 
   const showToast = (message, type) => {
-  setToast({ show: true, message, type });
-  setTimeout(() => setToast({ show: false, message: '', type: '' }), 4000);
+    setToast({ show: true, message, type });
+    setTimeout(() => setToast({ show: false, message: '', type: '' }), 4000);
   };
 
-  
-const handleAuth = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
-  try {
-    const res = await axios.post(url, { username, password });
-    if (res.data.token) {
-      setToken(res.data.token);
-      setUsername('');
-      setPassword('');
-      showToast(isRegister ? 'Usuario registrado con éxito' : 'Inicio de sesión exitoso', 'success');
-    } else {
-      showToast('No se recibió un token válido.', 'error');
+  const handleAuth = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
+    try {
+      const res = await axios.post(url, { username, password });
+      if (res.data.token) {
+        setToken(res.data.token);
+        setUsername('');
+        setPassword('');
+        showToast(isRegister ? 'Usuario registrado con éxito' : 'Inicio de sesión exitoso', 'success');
+      } else {
+        showToast('No se recibió un token válido.', 'error');
+      }
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Error al autenticar', 'error');
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    showToast(err.response?.data?.message || 'Error al autenticar', 'error');
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const handleCrearCita = async (e) => {
     e.preventDefault();
@@ -80,55 +77,56 @@ const handleAuth = async (e) => {
   };
 
   return (     
-      <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
+    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
       <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
       {loading && <div className="spinner"></div>}
 
       {!token ? (
-        <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
-          <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
-          <input
-            type="text"
-            placeholder="Usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            style={inputStyle}
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={inputStyle}
-          />
-          <div style={{ textAlign: 'center' }}>
-            <button type="submit" style={buttonStyle}>
-              {isRegister ? 'Registrarse' : 'Entrar'}
-            </button>
-          </div>
+        <>
+          <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
+            <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              style={inputStyle}
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={inputStyle}
+            />
+            <div style={{ textAlign: 'center' }}>
+              <button type="submit" style={buttonStyle}>
+                {isRegister ? 'Registrarse' : 'Entrar'}
+              </button>
+            </div>
 
-      <div style={{ textAlign: 'center' }}>
-         <p>
-            {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
-            <button
-            type="button"
-            onClick={() => setIsRegister(!isRegister)}
-            className="link-button"
-            >
-            {isRegister ? 'Inicia sesión' : 'Regístrate'}
-            </button>
-          </p>
-      </div>
-          
-        </form>
-      {toast.show && (
-      <div className={`toast ${toast.type}`}>
-      {toast.message}
-      </div>
-      )}
-        
+            <div style={{ textAlign: 'center' }}>
+              <p>
+                {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
+                <button
+                  type="button"
+                  onClick={() => setIsRegister(!isRegister)}
+                  className="link-button"
+                >
+                  {isRegister ? 'Inicia sesión' : 'Regístrate'}
+                </button>
+              </p>
+            </div>
+          </form>
+
+          {toast.show && (
+            <div className={`toast ${toast.type}`}>
+              {toast.message}
+            </div>
+          )}
+        </>
       ) : (
         <>
           <button onClick={handleLogout} style={logoutButtonStyle}>Cerrar Sesión</button>
@@ -151,6 +149,12 @@ const handleAuth = async (e) => {
             />
             <button type="submit" style={buttonStyle}>Crear</button>
           </form>
+
+          {toast.show && (
+            <div className={`toast ${toast.type}`} style={{ marginTop: '1rem' }}>
+              {toast.message}
+            </div>
+          )}
 
           <div style={{ marginTop: '2rem' }}>
             <h2>Mis Citas</h2>
@@ -199,6 +203,5 @@ const linkButtonStyle = {
   padding: 0,
   margin: '0 auto',
 };
-
 
 export default App;
