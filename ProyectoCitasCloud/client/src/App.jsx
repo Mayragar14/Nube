@@ -13,6 +13,9 @@ function App() {
   const [citas, setCitas] = useState([]);
   const [isRegister, setIsRegister] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '', type: '' });
+
   useEffect(() => {
     if (token) {
       fetchCitas();
@@ -30,22 +33,33 @@ function App() {
     }
   };
 
-  const handleAuth = async (e) => {
-    e.preventDefault();
-    const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
-    try {
-      const res = await axios.post(url, { username, password });
-      if (res.data.token) {
-        setToken(res.data.token);
-        setUsername('');
-        setPassword('');
-      } else {
-        alert('No se recibió un token válido.');
-      }
-    } catch (err) {
-      alert(err.response?.data?.message || 'Error al autenticar');
-    }
+  const showToast = (message, type) => {
+  setToast({ show: true, message, type });
+  setTimeout(() => setToast({ show: false, message: '', type: '' }), 4000);
   };
+
+  
+const handleAuth = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  const url = isRegister ? `${API}/api/auth/register` : `${API}/api/auth/login`;
+  try {
+    const res = await axios.post(url, { username, password });
+    if (res.data.token) {
+      setToken(res.data.token);
+      setUsername('');
+      setPassword('');
+      showToast(isRegister ? 'Usuario registrado con éxito' : 'Inicio de sesión exitoso', 'success');
+    } else {
+      showToast('No se recibió un token válido.', 'error');
+    }
+  } catch (err) {
+    showToast(err.response?.data?.message || 'Error al autenticar', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleCrearCita = async (e) => {
     e.preventDefault();
@@ -68,6 +82,15 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
+      {loading && <div className="spinner"></div>}
+
+      {toast.show && (
+      <div className={`toast ${toast.type}`}>
+      {toast.message}
+      </div>
+      )}
+
+      
       <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
 
       {!token ? (
