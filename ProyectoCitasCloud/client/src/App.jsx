@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App.css'; // Opcional: crea un archivo App.css si prefieres estilos separados
-
+import './App.css'; 
 const API = 'https://backend-citas-59bo.onrender.com';
 
 function App() {
@@ -80,8 +79,9 @@ const handleAuth = async (e) => {
     setCitas([]);
   };
 
-  return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
+  return (     
+      <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
+      <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
       {loading && <div className="spinner"></div>}
 
       {toast.show && (
@@ -89,9 +89,6 @@ const handleAuth = async (e) => {
       {toast.message}
       </div>
       )}
-
-      
-      <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
 
       {!token ? (
         <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
