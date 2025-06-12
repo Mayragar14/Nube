@@ -59,7 +59,7 @@ input, button {
   font-weight: bold;
 
   width: fit-content;
-  max-width: 300px;
+  max-width: 200px;
   text-align: center;
   word-break: break-word;
 }
