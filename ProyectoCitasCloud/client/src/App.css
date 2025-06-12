@@ -45,21 +45,26 @@ input, button {
 /* Toast: mensajes flotantes */
 
 .toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #333;
   color: white;
   padding: 12px 20px;
   border-radius: 6px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  font-weight: bold;
-  width: fit-content;
-  max-width: 90%;
-  margin: 1rem auto 0 auto; /* margen superior + centrado horizontal */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
   animation: fadeInOut 4s ease-in-out;
+  font-weight: bold;
+
+  width: fit-content;
+  max-width: 300px;
   text-align: center;
+  word-break: break-word;
 }
 
-
-.toast.success {
+  .toast.success {
   background-color: #28a745;
 }
 
