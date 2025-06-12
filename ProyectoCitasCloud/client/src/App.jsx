@@ -72,7 +72,7 @@ function App() {
 
       {!token ? (
         <form onSubmit={handleAuth} style={{ marginBottom: '2rem' }}>
-          <h2>{isRegister ? 'Registro' : 'Iniciar sesión'}</h2>
+          <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
           <input
             type="text"
             placeholder="Usuario"
