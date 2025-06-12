@@ -68,7 +68,7 @@ function App() {
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
-      <h1 style={{ textAlign: 'center' }}>GESTIÓN DE CITAS MÉDICAS</h1>
+      <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
 
       {!token ? (
         <form onSubmit={handleAuth} style={{ marginBottom: '2rem' }}>
@@ -103,7 +103,7 @@ function App() {
             onClick={() => setIsRegister(!isRegister)}
             className="link-button"
             >
-            {isRegister ? 'Iniciar sesión' : 'Registrarse'}
+            {isRegister ? 'Inicia sesión' : 'Regístrate'}
             </button>
           </p>
       </div>
