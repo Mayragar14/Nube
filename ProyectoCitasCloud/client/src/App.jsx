@@ -80,8 +80,8 @@ const handleAuth = async (e) => {
   };
 
   return (     
-      <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
       <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto' }}>
+      <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
       {loading && <div className="spinner"></div>}
 
       {toast.show && (
