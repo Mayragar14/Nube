@@ -95,6 +95,7 @@ function App() {
             </button>
           </div>
 
+      <div style={{ textAlign: 'center' }}>
          <p>
             {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
             <button
@@ -105,6 +106,8 @@ function App() {
             {isRegister ? 'Iniciar sesión' : 'Registrarse'}
             </button>
           </p>
+      </div>
+          
         </form>
       ) : (
         <>
