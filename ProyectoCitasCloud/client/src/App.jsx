@@ -132,7 +132,7 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 600, margin: 'auto', position: 'relative' }}>
+    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 700, margin: 'auto', position: 'relative' }}>
       <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
       {loading && <div className="spinner"></div>}
 
@@ -241,56 +241,39 @@ function App() {
 
           <div style={{ marginTop: '2rem' }}>
             <h2>Mis Citas</h2>
-            <ul style={{ listStyle: 'none', padding: 0 }}>
-              {citas.map((cita) => (
-                <li
-                  key={cita._id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '10px',
-                    padding: '10px',
-                    border: '1px solid #ccc',
-                    borderRadius: '5px',
-                    backgroundColor: '#f9f9f9',
-                  }}
-                >
-                  <span>
-                    <strong>{new Date(cita.fecha).toLocaleDateString()}</strong> - {cita.servicio}
-                  </span>
-                  <div>
-                    <button
-                      onClick={() => handleEditarCita(cita)}
-                      style={{
-                        marginRight: '8px',
-                        padding: '6px 12px',
-                        backgroundColor: '#f0ad4e',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                   🖊️ Editar
-                    </button>
-                    <button
-                      onClick={() => handleEliminarCita(cita._id)}
-                      style={{
-                        padding: '6px 12px',
-                        backgroundColor: '#e74c3c',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                    🗑️ Eliminar
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Fecha</th>
+                  <th style={thStyle}>Servicio</th>
+                  <th style={thStyle}>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {citas.map((cita) => (
+                  <tr key={cita._id} style={{ backgroundColor: '#f9f9f9' }}>
+                    <td style={tdStyle}>{new Date(cita.fecha).toLocaleDateString()}</td>
+                    <td style={tdStyle}>{cita.servicio}</td>
+                    <td style={tdStyle}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => handleEditarCita(cita)}
+                          style={{ ...actionButtonStyle, backgroundColor: '#f0ad4e' }}
+                        >
+                          🖊️ Editar
+                        </button>
+                        <button
+                          onClick={() => handleEliminarCita(cita._id)}
+                          style={{ ...actionButtonStyle, backgroundColor: '#e74c3c' }}
+                        >
+                          🗑️ Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </>
       )}
@@ -326,6 +309,26 @@ const buttonStyle = {
 const logoutButtonStyle = {
   ...buttonStyle,
   backgroundColor: '#dc3545',
+};
+
+const thStyle = {
+  borderBottom: '2px solid #ccc',
+  padding: '10px',
+  textAlign: 'left',
+  backgroundColor: '#e0e0e0',
+};
+
+const tdStyle = {
+  borderBottom: '1px solid #ccc',
+  padding: '10px',
+};
+
+const actionButtonStyle = {
+  padding: '6px 12px',
+  color: 'white',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer',
 };
 
 export default App;
