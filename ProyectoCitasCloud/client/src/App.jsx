@@ -241,38 +241,53 @@ function App() {
 
           <div style={{ marginTop: '2rem' }}>
             <h2>Mis Citas</h2>
-            <ul>
+            <ul style={{ listStyle: 'none', padding: 0 }}>
               {citas.map((cita) => (
-                <li key={cita._id} style={{ marginBottom: '10px' }}>
-                  <strong>{cita.fecha}</strong> - {cita.servicio}
-                  <button
-                    onClick={() => handleEditarCita(cita)}
-                    style={{
-                      marginLeft: '10px',
-                      padding: '4px 8px',
-                      backgroundColor: '#f0ad4e',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => handleEliminarCita(cita._id)}
-                    style={{
-                      marginLeft: '5px',
-                      padding: '4px 8px',
-                      backgroundColor: '#e74c3c',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Eliminar
-                  </button>
+                <li
+                  key={cita._id}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '10px',
+                    padding: '10px',
+                    border: '1px solid #ccc',
+                    borderRadius: '5px',
+                    backgroundColor: '#f9f9f9',
+                  }}
+                >
+                  <span>
+                    <strong>{new Date(cita.fecha).toLocaleDateString()}</strong> - {cita.servicio}
+                  </span>
+                  <div>
+                    <button
+                      onClick={() => handleEditarCita(cita)}
+                      style={{
+                        marginRight: '8px',
+                        padding: '6px 12px',
+                        backgroundColor: '#f0ad4e',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                   🖊️ Editar
+                    </button>
+                    <button
+                      onClick={() => handleEliminarCita(cita._id)}
+                      style={{
+                        padding: '6px 12px',
+                        backgroundColor: '#e74c3c',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                    🗑️ Eliminar
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
