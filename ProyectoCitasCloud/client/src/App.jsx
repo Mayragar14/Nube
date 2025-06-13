@@ -179,7 +179,7 @@ function App() {
         <>
           <button onClick={handleLogout} style={logoutButtonStyle}>Cerrar Sesión</button>
 
-          <div style={{ position: 'relative', marginTop: '2rem' }}>
+          <div style={{ position: 'relative', marginTop: '1rem' }}>
             <form onSubmit={handleGuardarCita}>
               <h2>{modoEdicion ? 'Editar Cita' : 'Crear Cita'}</h2>
 
@@ -239,7 +239,7 @@ function App() {
             </form>
           </div>
 
-          <div style={{ marginTop: '2rem' }}>
+          <div style={{ marginTop: '1rem' }}>
             <h2>Mis Citas</h2>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
