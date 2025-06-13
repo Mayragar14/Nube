@@ -132,8 +132,8 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial', maxWidth: 700, margin: 'auto', position: 'relative' }}>
-      <h1 style={{ textAlign: 'center' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
+    <div style={{ padding: '1rem', fontFamily: 'Arial', maxWidth: 700, margin: 'auto', position: 'relative' }}>
+      <h1 style={{ textAlign: 'center', marginTop: '0.5rem', marginBottom: '1.5rem' }}>🗓️ GESTIÓN DE CITAS MÉDICAS</h1>
       {loading && <div className="spinner"></div>}
 
       {!token ? (
