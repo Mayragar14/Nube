@@ -14,6 +14,8 @@ function App() {
   const [isRegister, setIsRegister] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [citaEditandoId, setCitaEditandoId] = useState(null);
 
   useEffect(() => {
     if (token) {
@@ -58,31 +60,75 @@ function App() {
     }
   };
 
-  const handleCrearCita = async (e) => {
-  e.preventDefault();
+  const handleGuardarCita = async (e) => {
+    e.preventDefault();
 
-  if (!fecha || !servicio) {
-    showToast('Por favor completa todos los campos', 'error');
-    return;
-  }
+    if (!fecha || !servicio) {
+      showToast('Por favor completa todos los campos', 'error');
+      return;
+    }
 
-  try {
-    await axios.post(`${API}/api/citas`, { fecha, servicio }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setFecha('');
-    setServicio('');
-    fetchCitas();
-    showToast('Cita creada con éxito', 'success');
-  } catch (err) {
-    showToast('Error al crear cita', 'error');
-  }
-};
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const fechaSeleccionada = new Date(fecha);
 
+    if (fechaSeleccionada < hoy) {
+      showToast('La fecha no puede ser anterior al día de hoy', 'error');
+      return;
+    }
+
+    try {
+      if (modoEdicion && citaEditandoId) {
+        await axios.put(`${API}/api/citas/${citaEditandoId}`, { fecha, servicio }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        showToast('Cita actualizada con éxito', 'success');
+      } else {
+        await axios.post(`${API}/api/citas`, { fecha, servicio }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        showToast('Cita creada con éxito', 'success');
+      }
+
+      setFecha('');
+      setServicio('');
+      setModoEdicion(false);
+      setCitaEditandoId(null);
+      fetchCitas();
+
+    } catch (err) {
+      showToast('Error al guardar la cita', 'error');
+    }
+  };
+
+  const handleEliminarCita = async (id) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar esta cita?')) return;
+
+    try {
+      await axios.delete(`${API}/api/citas/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      showToast('Cita eliminada con éxito', 'success');
+      fetchCitas();
+    } catch (err) {
+      showToast('Error al eliminar cita', 'error');
+    }
+  };
+
+  const handleEditarCita = (cita) => {
+    setFecha(cita.fecha.slice(0, 10));
+    setServicio(cita.servicio);
+    setCitaEditandoId(cita._id);
+    setModoEdicion(true);
+  };
 
   const handleLogout = () => {
     setToken('');
     setCitas([]);
+    setFecha('');
+    setServicio('');
+    setModoEdicion(false);
+    setCitaEditandoId(null);
   };
 
   return (
@@ -92,104 +138,152 @@ function App() {
 
       {!token ? (
         <>
-          <div style={{ position: 'relative' }}>
-            <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
-              <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
-              <input
-                type="text"
-                placeholder="Usuario"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                style={inputStyle}
-              />
-              <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={inputStyle}
-              />
-              <div style={{ textAlign: 'center' }}>
-                <button type="submit" style={buttonStyle}>
-                  {isRegister ? 'Registrarse' : 'Entrar'}
+          <form onSubmit={handleAuth} style={{ marginBottom: '2rem', marginTop: '3rem' }}>
+            <h2>{isRegister ? '🔐 Registro' : '🔓 Iniciar sesión'}</h2>
+            <input
+              type="text"
+              placeholder="Usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              style={inputStyle}
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={inputStyle}
+            />
+            <div style={{ textAlign: 'center' }}>
+              <button type="submit" style={buttonStyle}>
+                {isRegister ? 'Registrarse' : 'Entrar'}
+              </button>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p>
+                {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
+                <button
+                  type="button"
+                  onClick={() => setIsRegister(!isRegister)}
+                  className="link-button"
+                >
+                  {isRegister ? 'Inicia sesión' : 'Regístrate'}
                 </button>
-              </div>
-
-              <div style={{ textAlign: 'center' }}>
-                <p>
-                  {isRegister ? '¿Ya tienes cuenta?' : '¿No tienes cuenta?'}{' '}
-                  <button
-                    type="button"
-                    onClick={() => setIsRegister(!isRegister)}
-                    className="link-button"
-                  >
-                    {isRegister ? 'Inicia sesión' : 'Regístrate'}
-                  </button>
-                </p>
-              </div>
-            </form>
-
-            {toast.show && (
-              <div className={`toast ${toast.type}`}>
-                {toast.message}
-              </div>
-            )}
-          </div>
+              </p>
+            </div>
+          </form>
         </>
       ) : (
         <>
           <button onClick={handleLogout} style={logoutButtonStyle}>Cerrar Sesión</button>
 
           <div style={{ position: 'relative', marginTop: '2rem' }}>
-            <form onSubmit={handleCrearCita}>
-              <h2>Crear Cita</h2>
+            <form onSubmit={handleGuardarCita}>
+              <h2>{modoEdicion ? 'Editar Cita' : 'Crear Cita'}</h2>
+
+              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                Fecha de la cita:
+              </label>
               <input
                 type="date"
                 value={fecha}
+                min={new Date().toISOString().split('T')[0]}
                 onChange={(e) => setFecha(e.target.value)}
                 required
                 style={inputStyle}
               />
-              
+
+              <label style={{ display: 'block', marginBottom: '5px', marginTop: '10px', fontWeight: 'bold' }}>
+                Tipo de servicio:
+              </label>
               <select
                 value={servicio}
                 onChange={(e) => setServicio(e.target.value)}
                 style={{
-                borderColor: servicio === "" ? "red" : "#ccc",
-                padding: "8px",
-                marginBottom: "10px"
-                      }}
+                  borderColor: servicio === "" ? "red" : "#ccc",
+                  padding: "8px",
+                  marginBottom: "10px",
+                  width: '100%',
+                  fontSize: '16px'
+                }}
               >
-                    <option value="">-- Selecciona un servicio --</option>
-                    <option value="Consulta médica">Consulta médica</option>
-                    <option value="Psicología">Psicología</option>
-                    <option value="Nutrición">Nutrición</option>
-                    <option value="Asesoría técnica">Asesoría técnica</option>
-                    <option value="Otro">Otro</option>
+                <option value="">-- Selecciona un servicio --</option>
+                <option value="Consulta médica">Consulta médica</option>
+                <option value="Psicología">Psicología</option>
+                <option value="Nutrición">Nutrición</option>
+                <option value="Asesoría técnica">Asesoría técnica</option>
+                <option value="Otro">Otro</option>
               </select>
 
-
-              <button type="submit" style={buttonStyle}>Crear</button>
-            </form>
-
-            {toast.show && (
-              <div className={`toast ${toast.type}`}>
-                {toast.message}
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="submit" style={buttonStyle}>
+                  {modoEdicion ? 'Actualizar' : 'Crear'}
+                </button>
+                {modoEdicion && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setModoEdicion(false);
+                      setCitaEditandoId(null);
+                      setFecha('');
+                      setServicio('');
+                    }}
+                    style={{ ...buttonStyle, backgroundColor: '#6c757d' }}
+                  >
+                    Cancelar
+                  </button>
+                )}
               </div>
-            )}
+            </form>
           </div>
 
           <div style={{ marginTop: '2rem' }}>
             <h2>Mis Citas</h2>
             <ul>
               {citas.map((cita) => (
-                <li key={cita._id}>{cita.fecha} - {cita.servicio}</li>
+                <li key={cita._id} style={{ marginBottom: '10px' }}>
+                  <strong>{cita.fecha}</strong> - {cita.servicio}
+                  <button
+                    onClick={() => handleEditarCita(cita)}
+                    style={{
+                      marginLeft: '10px',
+                      padding: '4px 8px',
+                      backgroundColor: '#f0ad4e',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => handleEliminarCita(cita._id)}
+                    style={{
+                      marginLeft: '5px',
+                      padding: '4px 8px',
+                      backgroundColor: '#e74c3c',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Eliminar
+                  </button>
+                </li>
               ))}
             </ul>
           </div>
         </>
+      )}
+
+      {toast.show && (
+        <div className={`toast ${toast.type}`}>
+          {toast.message}
+        </div>
       )}
     </div>
   );
